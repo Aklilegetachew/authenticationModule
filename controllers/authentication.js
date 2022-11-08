@@ -73,9 +73,7 @@ exports.login = (req, res) => {
                 .status(200)
                 .json({ message: "Signed In", jwt: userJwt });
             } else {
-              res
-                .status(401)
-                .json({ message: "incorrect password", result: result[0] });
+              res.status(401).json({ message: "incorrect password" });
             }
           }
         );

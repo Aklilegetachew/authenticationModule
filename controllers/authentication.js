@@ -62,6 +62,7 @@ exports.login = (req, res) => {
             if (verify) {
               const userJwt = jwt.sign(
                 {
+                  id: result[0][0].id,
                   userName: result[0][0].user_name,
                   email: result[0][0].user_email,
                   role: result[0][0].user_role,

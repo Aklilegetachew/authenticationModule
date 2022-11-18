@@ -3,12 +3,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.signup = (req, res) => {
-  const userName = req.body.userName;
-  const email = req.body.email;
-  const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
-
-  var Role = "Super Admin";
+  console.log(req.body);
+  const userName = req.body.alldata.userName;
+  const email = req.body.alldata.email;
+  const password = req.body.alldata.password;
+  const confirmPassword = req.body.alldata.confirmPassword;
+  const Role = req.body.alldata.oroles;
+  // var Role = "Super Admin";
 
   db.execute("SELECT * FROM users WHERE user_email='" + email + "'")
     .then((result) => {
@@ -52,8 +53,8 @@ exports.login = (req, res) => {
 
   db.execute("SELECT * FROM users WHERE user_email='" + email + "'")
     .then((result) => {
-      if (!result) {
-        return res.redirect("/login");
+      if (result[0].length == 0) {
+        res.status(403).json({ message: "email" });
       } else {
         bcrypt.compare(
           password,
@@ -62,7 +63,6 @@ exports.login = (req, res) => {
             if (verify) {
               const userJwt = jwt.sign(
                 {
-                  id: result[0][0].id,
                   userName: result[0][0].user_name,
                   email: result[0][0].user_email,
                   role: result[0][0].user_role,
@@ -74,7 +74,7 @@ exports.login = (req, res) => {
                 .status(200)
                 .json({ message: "Signed In", jwt: userJwt });
             } else {
-              res.status(401).json({ message: "incorrect password" });
+              res.status(403).json({ message: "password", result: result[0] });
             }
           }
         );

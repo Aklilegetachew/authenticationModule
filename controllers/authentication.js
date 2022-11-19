@@ -20,7 +20,7 @@ exports.signup = (req, res) => {
           bcrypt.hash(password, salt, function (err, hash) {
             db.execute(
               "INSERT INTO users(user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)",
-              [userName, email, hash, "Sales"]
+              [userName, email, hash, Role]
             ).then(() => {
               // Generating JWT
               const userJwt = jwt.sign(
@@ -62,7 +62,8 @@ exports.login = (req, res) => {
           function (err, verify) {
             if (verify) {
               const userJwt = jwt.sign(
-                {
+                { 
+                  id: result[0][0].id,
                   userName: result[0][0].user_name,
                   email: result[0][0].user_email,
                   role: result[0][0].user_role,

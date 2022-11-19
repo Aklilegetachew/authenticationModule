@@ -9,6 +9,7 @@ exports.signup = (req, res) => {
   const password = req.body.alldata.password;
   const confirmPassword = req.body.alldata.confirmPassword;
   const Role = req.body.alldata.oroles;
+  const companyId = req.body.alldata.personId;
   // var Role = "Super Admin";
 
   db.execute("SELECT * FROM users WHERE user_email='" + email + "'")
@@ -19,8 +20,8 @@ exports.signup = (req, res) => {
           const salt = 12;
           bcrypt.hash(password, salt, function (err, hash) {
             db.execute(
-              "INSERT INTO users(user_name, user_email, user_password, user_role) VALUES (?, ?, ?, ?)",
-              [userName, email, hash, Role]
+              "INSERT INTO users(user_name, user_email, user_password, user_role, personId) VALUES (?, ?, ?, ?, ?)",
+              [userName, email, hash, Role, companyId]
             ).then(() => {
               // Generating JWT
               const userJwt = jwt.sign(
@@ -62,8 +63,8 @@ exports.login = (req, res) => {
           function (err, verify) {
             if (verify) {
               const userJwt = jwt.sign(
-                { 
-                  id: result[0][0].id,
+                {
+                  id: result[0][0].personId,
                   userName: result[0][0].user_name,
                   email: result[0][0].user_email,
                   role: result[0][0].user_role,

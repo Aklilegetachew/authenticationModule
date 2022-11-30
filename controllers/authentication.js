@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 exports.signup = (req, res) => {
   console.log(req.body);
+  
   const userName = req.body.alldata.userName;
   const email = req.body.alldata.email;
   const password = req.body.alldata.password;
